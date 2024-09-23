@@ -69,17 +69,15 @@ while True:
   # check if data was received
   #
   if len(lineOfData) > 0:
-    sensorValue, tiltValue = (int(x) for x in lineOfData.split(','))
+    pos1, pos2, sensorValue = (int(x) for x in lineOfData.split(','))
 
     distance = getDistance(sensorValue)
     
+    data.append(pos1)
+    data.append(pos2)
     data.append(distance)
-    data.append(tiltValue)
 
     with open(dataFile, 'a', newline='') as csvfile:
       csvWriter = csv.writer(csvfile,delimiter=',')
       csvWriter.writerow(data)
       data = []
-
-    # PUSH EACH DATA POINT COMBINATION TO THE END OF THE ARRAY AS AN XY MATRIX
-

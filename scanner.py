@@ -10,6 +10,9 @@
 import serial
 import csv
 import datetime
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 #
 # Note 1: This python script was designed to run with Python 3.
@@ -31,25 +34,25 @@ import datetime
 # For Windows computers, the name is formatted like: "COM6"
 # For Apple computers, the name is formatted like: "/dev/tty.usbmodemfa141"
 #
-arduinoComPort = "/dev/cu.usbmodem101"
-data = []
+# arduinoComPort = "COM6"
+# data = []
 
 #
 # Set the baud rate
 # NOTE1: The baudRate for the sending and receiving programs must be the same!
-# NOTE2: For faster communication, set the baudRate to 115200 below
-#        and check that the arduino sketch you are using is updated as well.
-#
-baudRate = 9600
+# # NOTE2: For faster communication, set the baudRate to 115200 below
+# #        and check that the arduino sketch you are using is updated as well.
+# #
+# baudRate = 9600
 
-dataFile = f'./data/{datetime.datetime.now().strftime("%m-%d-%y %H:%M:%S")}.csv'
-# dataFile = f'./calibration/60.csv'
+# dataFile = f'./data/{datetime.datetime.now().strftime("%m-%d-%y %H:%M:%S")}.csv'
+# # dataFile = f'./calibration/60.csv'
 
 
-#
-# open the serial port
-#
-serialPort = serial.Serial(arduinoComPort, baudRate, timeout=1)
+# #
+# # open the serial port
+# #
+# serialPort = serial.Serial(arduinoComPort, baudRate, timeout=1)
 
 def getDistance(x):
   # 117 + -0.362x + 3.4E-04x^2
@@ -58,7 +61,7 @@ def getDistance(x):
 #
 # main loop to read data from the Arduino, then display it
 #
-while True:
+while False:
   #
   # ask for a line of data from the serial port, the ".decode()" converts the
   # data from an "array of bytes", to a string
@@ -81,3 +84,19 @@ while True:
       csvWriter = csv.writer(csvfile,delimiter=',')
       csvWriter.writerow(data)
       data = []
+  
+
+def plot_data():
+    df = pd.read_csv('/home/ariel920501/3d_Scanner/testData.csv')
+    # plt.scatter( df.iloc[:, 0], df.iloc[:,1], c=df.iloc[:,2], cmap='viridis') 
+    # plt.colorbar(label='Value')
+    # plt.xlabel('X Position')
+    # plt.ylabel('Y Position')
+    # plt.title('Scatter Plot of Values')
+    # plt.show()
+    data = df.pivot(index = 'x',columns = 'y',values= 'value')
+
+    sns.heatmap(data, annot=True, cmap='viridis')
+    plt.show()
+
+plot_data()
